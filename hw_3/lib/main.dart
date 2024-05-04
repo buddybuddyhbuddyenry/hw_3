@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+
 import 'dart:math';
 import 'package:flutter/material.dart';
 
@@ -7,7 +8,7 @@ void main() {
   runApp(YahtzeeGame());
 }
 
-int renew = 0;
+int renewdice = 0;
 int num = 3;
 int set = 0;
 int turn = 1;
@@ -47,9 +48,12 @@ class _YahtzeeGameState extends State<YahtzeeGame> {
               return Scaffold(
                 body: SafeArea(
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Container(height: 110, child: Image.network('https://th.bing.com/th/id/OIP.Ft5v-GtVle7hhA-kEOPF8gHaDm?w=348&h=170&c=7&r=0&o=5&dpr=1.3&pid=1.7')),
+                      Container(
+                          height: 110,
+                          child: Image.network(
+                              'https://th.bing.com/th/id/OIP.Ft5v-GtVle7hhA-kEOPF8gHaDm?w=348&h=170&c=7&r=0&o=5&dpr=1.3&pid=1.7')),
                       Expanded(flex: 1, child: YahtzeeScreen()),
                       Expanded(
                         flex: 3,
@@ -67,7 +71,7 @@ class _YahtzeeGameState extends State<YahtzeeGame> {
                         children: [
                           ElevatedButton(
                             onPressed: () {
-                              renew = 0;
+                              renewdice = 0;
                               num = 3;
                               set = 0;
                               turn = 1;
@@ -79,18 +83,33 @@ class _YahtzeeGameState extends State<YahtzeeGame> {
                               }
                               setState(() {});
                             },
-                            child: Text('Restart'),
+                            child: Text('重置'),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              if(num<1){
+                              renewdice = 0;
+                              num = 3;
+                              set = 0;
+                              turn++;
+                              for (int x = 0; x < 13; x++) {
+                                DiceCount.diceCountMap[x + 1] = 0;
+                              }
+
+                              setState(() {});}
+                            },
+                            child: Text('跳過這回'),
                           ),
                           ElevatedButton(
                             onPressed: () {
                               goToNextPageIfNeeded();
                               if (num > 0) {
-                                renew = 1;
+                                renewdice = 1;
                                 num--;
                                 setState(() {});
                               }
                             },
-                            child: Text('Roll Dice'),
+                            child: Text('骰骰子'),
                           ),
                           Text('回合:$turn/13')
                         ],
@@ -107,13 +126,12 @@ class _YahtzeeGameState extends State<YahtzeeGame> {
   }
 }
 
-
-
 class NextPage extends StatelessWidget {
   const NextPage({super.key});
 
   @override
-  Widget build(BuildContext context) {int? re = RealDiceCount.diceCountMap[14];
+  Widget build(BuildContext context) {
+    int? re = RealDiceCount.diceCountMap[14];
     return Scaffold(
       body: Center(
         child: Column(
@@ -131,7 +149,7 @@ class NextPage extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 // 重置遊戲狀態
-                renew = 0;
+                renewdice = 0;
                 num = 3;
                 set = 0;
                 turn = 1;
@@ -463,7 +481,7 @@ class _GridState extends State<Grid> {
                     : Text(
                         text,
                         style:
-                            const TextStyle(fontSize: 20, color: Colors.black),
+                            const TextStyle(fontSize: 16, color: Colors.black),
                       ),
               ),
             ),
@@ -800,15 +818,15 @@ class _YahtzeeScreenState extends State<YahtzeeScreen> {
       DiceCount.diceCountMap[13] = fastfast;
 
       print(DiceCount.diceCountMap);
-      print(renew);
+      print(renewdice);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (renew == 1) {
+    if (renewdice == 1) {
       rollDice();
-      renew = 0; // 重置 renew 變數，避免多次觸發 rollDice()
+      renewdice = 0; // 重置 renewdice 變數，避免多次觸發 rollDice()
     }
 
     return Expanded(
